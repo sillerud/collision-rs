@@ -15,8 +15,8 @@
 
 //! Oriented bounding boxes
 
-use point::{Point2, Point3};
-use vector::{Vector2, Vector3};
+use cgmath::{Point2, Point3};
+use cgmath::{Vector2, Vector3};
 
 #[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Obb2<S> {

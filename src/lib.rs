@@ -33,24 +33,9 @@
 extern crate num as rust_num;
 extern crate rustc_serialize;
 extern crate rand;
+extern crate cgmath;
 
 // Re-exports
-
-pub use array::*;
-pub use matrix::*;
-pub use quaternion::*;
-pub use vector::*;
-
-pub use angle::*;
-pub use plane::Plane;
-pub use point::*;
-pub use line::*;
-pub use ray::*;
-pub use rotation::*;
-pub use transform::*;
-
-pub use projection::*;
-
 pub use aabb::*;
 pub use bound::*;
 pub use cylinder::Cylinder;
@@ -59,28 +44,9 @@ pub use intersect::Intersect;
 pub use obb::*;
 pub use sphere::Sphere;
 
-pub use approx::ApproxEq;
-pub use num::*;
-
 pub use rust_num::{One, Zero, one, zero};
 
 // Modules
-
-mod array;
-
-mod matrix;
-mod quaternion;
-mod vector;
-
-mod angle;
-mod plane;
-mod point;
-mod line;
-mod ray;
-mod rotation;
-mod transform;
-
-mod projection;
 
 mod aabb;
 mod bound;
@@ -90,5 +56,3 @@ mod intersect;
 mod obb;
 mod sphere;
 
-mod approx;
-mod num;

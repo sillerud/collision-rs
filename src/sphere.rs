@@ -19,11 +19,11 @@ use rust_num::Zero;
 
 use bound::*;
 use intersect::Intersect;
-use num::BaseFloat;
-use point::{Point, Point3};
-use plane::Plane;
-use ray::Ray3;
-use vector::Vector;
+use cgmath::BaseFloat;
+use cgmath::{Point, Point3};
+use cgmath::Plane;
+use cgmath::Ray3;
+use cgmath::Vector;
 
 #[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Sphere<S> {

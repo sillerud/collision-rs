@@ -1,6 +1,6 @@
 [package]
 
-name = "cgmath"
+name = "collision"
 version = "0.4.0"
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Brian Heylin",
@@ -14,17 +14,16 @@ authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
         "Tomasz Stachowiak"
 ]
 license = "Apache-2.0"
-description = "A linear algebra and mathematics library for computer graphics."
+description = "A collision extension to cgmath"
 
-documentation = "http://bjz.github.io/cgmath-rs"
-homepage = "https://github.com/bjz/cgmath-rs"
-repository = "https://github.com/bjz/cgmath-rs"
+homepage = "https://github.com/csherratt/collision-rs"
+repository = "https://github.com/csherratt/collision-rs"
 readme = "README.md"
 
-keywords = ["gamedev", "math", "matrix", "vector", "quaternion"]
+keywords = ["gamedev", "cgmath", "collision"]
 
 [lib]
-name = "cgmath"
+name = "collision"
 
 [dependencies.rustc-serialize]
 rustc_serialize = "0.3"
@@ -32,3 +31,4 @@ rustc_serialize = "0.3"
 [dependencies]
 num = "0.1"
 rand = "0.3"
+cgmath = "0.4"

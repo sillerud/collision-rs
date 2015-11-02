@@ -15,13 +15,13 @@
 
 //! View frustum for visibility determination
 
-use array::Array2;
+use cgmath::Array2;
 use bound::*;
-use matrix::Matrix4;
-use num::BaseFloat;
-use plane::Plane;
-use point::Point3;
-use vector::{Vector, EuclideanVector};
+use cgmath::Matrix4;
+use cgmath::BaseFloat;
+use cgmath::Plane;
+use cgmath::Point3;
+use cgmath::{Vector, EuclideanVector};
 
 #[derive(Copy, Clone, Debug, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Frustum<S: BaseFloat> {

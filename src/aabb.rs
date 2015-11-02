@@ -24,13 +24,13 @@ use std::fmt;
 
 use rust_num::{Float, Zero, One};
 
-use bound::*;
-use point::{Point, Point2, Point3};
-use vector::{Vector, Vector2, Vector3};
-use ray::{Ray2};
+use bound::{Bound, Relation};
+use cgmath::{Point, Point2, Point3};
+use cgmath::{Vector, Vector2, Vector3};
+use cgmath::{Ray2};
 use intersect::Intersect;
-use num::{BaseNum, BaseFloat};
-use plane::Plane;
+use cgmath::{BaseNum, BaseFloat};
+use cgmath::Plane;
 
 
 pub trait Aabb<S: BaseNum, V: Vector<S>, P: Point<S, V>>: Sized {

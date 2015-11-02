@@ -15,9 +15,10 @@
 
 //! Generic spatial bounds.
 
-use matrix::Matrix4;
-use num::BaseFloat;
-use plane::Plane;
+use cgmath::{Matrix, Matrix4};
+use cgmath::BaseFloat;
+use cgmath::Plane;
+use cgmath::{Point, Point3};
 
 /// Spatial relation between two objects.
 #[derive(Copy, Clone, Debug, Eq, Hash, Ord, PartialOrd, PartialEq)]
@@ -41,6 +42,29 @@ pub trait Bound<S: BaseFloat + 'static>: Sized {
         match Frustum::from_matrix4(*projection) {
             Some(f) => f.contains(self),
             None => Relation::Cross,
+        }
+    }
+}
+
+impl<S: BaseFloat + 'static> Bound<S> for Point3<S> {
+    fn relate_plane(&self, plane: &Plane<S>) -> Relation {
+        let dist = self.dot(&plane.n);
+        if dist > plane.d {
+            Relation::In
+        }else if dist < plane.d {
+            Relation::Out
+        }else {
+            Relation::Cross
+        }
+    }
+
+    fn relate_clip_space(&self, projection: &Matrix4<S>) -> Relation {
+        use std::cmp::Ordering::*;
+        let p = projection.mul_v(&self.to_homogeneous());
+        match (p.x.abs().partial_cmp(&p.w), p.y.abs().partial_cmp(&p.w), p.z.abs().partial_cmp(&p.w)) {
+            (Some(Less), Some(Less), Some(Less)) => Relation::In,
+            (Some(Greater), _, _) | (_, Some(Greater), _) | (_, _, Some(Greater)) => Relation::Out,
+            _ => Relation::Cross,
         }
     }
 }

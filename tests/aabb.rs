@@ -14,12 +14,14 @@
 // limitations under the License.
 
 extern crate cgmath;
+extern crate collision;
 
-use cgmath::{Aabb, Aabb2, Aabb3};
+use collision::{Aabb, Aabb2, Aabb3};
+use collision::{Bound, Relation};
+use collision::Intersect;
 use cgmath::{Point2, Point3};
 use cgmath::{Vector2, Vector3};
-use cgmath::{Ray, Intersect};
-use cgmath::{Plane, Bound, Relation};
+use cgmath::{Ray, Plane};
 
 #[test]
 fn test_general() {

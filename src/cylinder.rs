@@ -15,8 +15,8 @@
 
 //! Oriented bounding cylinder
 
-use point::Point3;
-use vector::Vector3;
+use cgmath::Point3;
+use cgmath::Vector3;
 
 #[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
 pub struct Cylinder<S> {
