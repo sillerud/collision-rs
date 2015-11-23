@@ -18,14 +18,14 @@
 use cgmath::{Point2, Point3};
 use cgmath::{Vector2, Vector3};
 
-#[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
+#[derive(Copy, Clone, PartialEq)]
 pub struct Obb2<S> {
     pub center: Point2<S>,
     pub axis: Vector2<S>,
     pub extents: Vector2<S>,
 }
 
-#[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
+#[derive(Copy, Clone, PartialEq)]
 pub struct Obb3<S> {
     pub center: Point3<S>,
     pub axis: Vector3<S>,

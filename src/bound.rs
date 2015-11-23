@@ -15,9 +15,9 @@
 
 //! Generic spatial bounds.
 
+use Plane;
 use cgmath::{Matrix, Matrix4};
 use cgmath::BaseFloat;
-use cgmath::Plane;
 use cgmath::{Point, Point3};
 
 /// Spatial relation between two objects.
@@ -33,13 +33,13 @@ pub enum Relation {
 }
 
 /// Generic bound.
-pub trait Bound<S: BaseFloat + 'static>: Sized {
+pub trait Bound<S: BaseFloat + 'static>: Sized + Copy {
     /// Classify the spatial relation with a plane.
-    fn relate_plane(&self, &Plane<S>) -> Relation;
+    fn relate_plane(self, Plane<S>) -> Relation;
     /// Classify the relation with a projection matrix.
-    fn relate_clip_space(&self, projection: &Matrix4<S>) -> Relation {
+    fn relate_clip_space(self, projection: Matrix4<S>) -> Relation {
         use frustum::Frustum;
-        match Frustum::from_matrix4(*projection) {
+        match Frustum::from_matrix4(projection) {
             Some(f) => f.contains(self),
             None => Relation::Cross,
         }
@@ -47,8 +47,8 @@ pub trait Bound<S: BaseFloat + 'static>: Sized {
 }
 
 impl<S: BaseFloat + 'static> Bound<S> for Point3<S> {
-    fn relate_plane(&self, plane: &Plane<S>) -> Relation {
-        let dist = self.dot(&plane.n);
+    fn relate_plane(self, plane: Plane<S>) -> Relation {
+        let dist = self.dot(plane.n);
         if dist > plane.d {
             Relation::In
         }else if dist < plane.d {
@@ -58,9 +58,9 @@ impl<S: BaseFloat + 'static> Bound<S> for Point3<S> {
         }
     }
 
-    fn relate_clip_space(&self, projection: &Matrix4<S>) -> Relation {
+    fn relate_clip_space(self, projection: Matrix4<S>) -> Relation {
         use std::cmp::Ordering::*;
-        let p = projection.mul_v(&self.to_homogeneous());
+        let p = projection.mul_v(self.to_homogeneous());
         match (p.x.abs().partial_cmp(&p.w), p.y.abs().partial_cmp(&p.w), p.z.abs().partial_cmp(&p.w)) {
             (Some(Less), Some(Less), Some(Less)) => Relation::In,
             (Some(Greater), _, _) | (_, Some(Greater), _) | (_, _, Some(Greater)) => Relation::Out,

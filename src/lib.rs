@@ -30,21 +30,20 @@
 //! `look_at`, `from_angle`, `from_euler`, and `from_axis_angle` methods.
 //! These are provided for convenience.
 
-extern crate num as rust_num;
-extern crate rustc_serialize;
-extern crate rand;
 extern crate cgmath;
+extern crate num;
 
 // Re-exports
 pub use aabb::*;
 pub use bound::*;
 pub use cylinder::Cylinder;
-pub use frustum::{Frustum, FrustumPoints};
+pub use frustum::{Frustum, FrustumPoints, Projection};
 pub use intersect::Intersect;
 pub use obb::*;
 pub use sphere::Sphere;
-
-pub use rust_num::{One, Zero, one, zero};
+pub use plane::Plane;
+pub use ray::{Ray, Ray2, Ray3};
+pub use line::{Line2, Line3};
 
 // Modules
 
@@ -55,4 +54,6 @@ mod frustum;
 mod intersect;
 mod obb;
 mod sphere;
-
+mod plane;
+mod ray;
+mod line;

@@ -15,8 +15,10 @@
 
 
 extern crate cgmath;
+extern crate collision;
 
 use cgmath::*;
+use collision::*;
 
 #[test]
 fn test_intersection() {
@@ -38,12 +40,12 @@ fn test_bound() {
     let normal = vec3(0f32, 0.0, 1.0);
 
     assert_eq!(sphere.relate_plane(
-        &Plane::from_point_normal(point, normal)
+        Plane::from_point_normal(point, normal)
         ), Relation::Cross);
     assert_eq!(sphere.relate_plane(
-        &Plane::from_point_normal(point.add_v(&normal.mul_s(-3.0)), normal),
+        Plane::from_point_normal(point.add_v(normal.mul_s(-3.0)), normal),
         ), Relation::In);
     assert_eq!(sphere.relate_plane(
-        &Plane::from_point_normal(point.add_v(&normal.mul_s(3.0)), normal),
+        Plane::from_point_normal(point.add_v(normal.mul_s(3.0)), normal),
         ), Relation::Out);
 }

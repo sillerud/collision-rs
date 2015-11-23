@@ -15,8 +15,10 @@
 
 
 extern crate cgmath;
+extern crate collision;
 
 use cgmath::*;
+use collision::*;
 
 #[test]
 fn test_from_points() {

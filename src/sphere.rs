@@ -15,17 +15,15 @@
 
 //! Bounding sphere
 
-use rust_num::Zero;
-
 use bound::*;
 use intersect::Intersect;
-use cgmath::BaseFloat;
+use Plane;
+use Ray3;
+use cgmath::{BaseFloat, Zero};
 use cgmath::{Point, Point3};
-use cgmath::Plane;
-use cgmath::Ray3;
 use cgmath::Vector;
 
-#[derive(Copy, Clone, PartialEq, RustcEncodable, RustcDecodable)]
+#[derive(Copy, Clone, PartialEq)]
 pub struct Sphere<S> {
     pub center: Point3<S>,
     pub radius: S,
@@ -35,24 +33,24 @@ impl<S: BaseFloat> Intersect<Option<Point3<S>>> for (Sphere<S>, Ray3<S>) {
     fn intersection(&self) -> Option<Point3<S>> {
         let (ref s, ref r) = *self;
 
-        let l = s.center.sub_p(&r.origin);
-        let tca = l.dot(&r.direction);
+        let l = s.center.sub_p(r.origin);
+        let tca = l.dot(r.direction);
         if tca < S::zero() { return None; }
-        let d2 = l.dot(&l) - tca*tca;
+        let d2 = l.dot(l) - tca*tca;
         if d2 > s.radius*s.radius { return None; }
         let thc = (s.radius*s.radius - d2).sqrt();
-        Some(r.origin.add_v(&r.direction.mul_s(tca - thc)))
+        Some(r.origin.add_v(r.direction.mul_s(tca - thc)))
     }
 }
 
 impl<S: BaseFloat + 'static> Bound<S> for Sphere<S> {
-    fn relate_plane(&self, plane: &Plane<S>) -> Relation {
-        let dist = self.center.dot(&plane.n) - plane.d;
+    fn relate_plane(self, plane: Plane<S>) -> Relation {
+        let dist = self.center.dot(plane.n) - plane.d;
         if dist > self.radius {
             Relation::In
-        }else if dist < - self.radius {
+        } else if dist < - self.radius {
             Relation::Out
-        }else {
+        } else {
             Relation::Cross
         }
     }

@@ -13,10 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use cgmath::{BaseFloat, Ray2, Ray3, Plane};
-use cgmath::{Point, Point2, Point3, Line2};
+use {Ray2, Ray3, Plane, Line2};
+use cgmath::{BaseFloat, Zero};
+use cgmath::{Point, Point2, Point3};
 use cgmath::{Vector, Vector2};
-use rust_num::Zero;
 
 pub trait Intersect<Result> {
     fn intersection(&self) -> Result;
@@ -27,9 +27,9 @@ impl<S: BaseFloat> Intersect<Option<Point3<S>>> for (Plane<S>, Ray3<S>) {
     fn intersection(&self) -> Option<Point3<S>> {
         let (ref p, ref r) = *self;
 
-        let t = -(p.d + r.origin.dot(&p.n)) / r.direction.dot(&p.n);
+        let t = -(p.d + r.origin.dot(p.n)) / r.direction.dot(p.n);
         if t < Zero::zero() { None }
-        else { Some(r.origin.add_v(&r.direction.mul_s(t))) }
+        else { Some(r.origin.add_v(r.direction.mul_s(t))) }
     }
 }
 
@@ -55,9 +55,9 @@ impl<S: BaseFloat> Intersect<Option<Point2<S>>> for (Ray2<S>, Line2<S>) {
         let r = ray.direction;
         let s = Vector2::new(line.dest.x - line.origin.x, line.dest.y - line.origin.y);
 
-        let cross_1 = r.perp_dot(&s);
+        let cross_1 = r.perp_dot(s);
         let qmp = Vector2::new(q.x - p.x, q.y - p.y);
-        let cross_2 = qmp.perp_dot(&r);
+        let cross_2 = qmp.perp_dot(r);
 
         if cross_1 == S::zero() {
             if cross_2 != S::zero() {
@@ -67,8 +67,8 @@ impl<S: BaseFloat> Intersect<Option<Point2<S>>> for (Ray2<S>, Line2<S>) {
 
             // collinear
             let q2mp = Vector2::new(line.dest.x - p.x, line.dest.y - p.y);
-            let dot_1 = qmp.dot(&r);
-            let dot_2 = q2mp.dot(&r);
+            let dot_1 = qmp.dot(r);
+            let dot_2 = q2mp.dot(r);
             if (dot_1 <= S::zero() && dot_2 >= S::zero()) || (dot_1 >= S::zero() && dot_2 <= S::zero()) {
                 return Some(p);
             }
@@ -85,7 +85,7 @@ impl<S: BaseFloat> Intersect<Option<Point2<S>>> for (Ray2<S>, Line2<S>) {
             return None;
         }
 
-        let t = qmp.perp_dot(&s) / cross_1;
+        let t = qmp.perp_dot(s) / cross_1;
         let u = cross_2 / cross_1;
 
         if S::zero() <= t && u >= S::zero() && u <= S::one() {

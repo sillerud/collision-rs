@@ -17,53 +17,52 @@ extern crate cgmath;
 extern crate collision;
 
 use collision::{Aabb, Aabb2, Aabb3};
-use collision::{Bound, Relation};
+use collision::{Bound, Relation, Plane, Ray};
 use collision::Intersect;
 use cgmath::{Point2, Point3};
 use cgmath::{Vector2, Vector3};
-use cgmath::{Ray, Plane};
 
 #[test]
 fn test_general() {
     let aabb = Aabb2::new(Point2::new(-20isize, 30isize), Point2::new(10isize, -10isize));
-    assert_eq!(aabb.min(), &Point2::new(-20isize, -10isize));
-    assert_eq!(aabb.max(), &Point2::new(10isize, 30isize));
+    assert_eq!(aabb.min(), Point2::new(-20isize, -10isize));
+    assert_eq!(aabb.max(), Point2::new(10isize, 30isize));
     assert_eq!(aabb.dim(), Vector2::new(30isize, 40isize));
     assert_eq!(aabb.volume(), 30isize * 40isize);
     assert_eq!(aabb.center(), Point2::new(-5isize, 10isize));
 
-    assert!(aabb.contains(&Point2::new(0isize, 0isize)));
-    assert!(!aabb.contains(&Point2::new(-50isize, -50isize)));
-    assert!(!aabb.contains(&Point2::new(50isize, 50isize)));
+    assert!(aabb.contains(Point2::new(0isize, 0isize)));
+    assert!(!aabb.contains(Point2::new(-50isize, -50isize)));
+    assert!(!aabb.contains(Point2::new(50isize, 50isize)));
 
-    assert_eq!(aabb.grow(&Point2::new(0isize, 0isize)), aabb);
-    assert_eq!(aabb.grow(&Point2::new(100isize, 100isize)),
+    assert_eq!(aabb.grow(Point2::new(0isize, 0isize)), aabb);
+    assert_eq!(aabb.grow(Point2::new(100isize, 100isize)),
         Aabb2::new(Point2::new(-20isize, -10isize), Point2::new(100isize, 100isize)));
-    assert_eq!(aabb.grow(&Point2::new(-100isize, -100isize)),
+    assert_eq!(aabb.grow(Point2::new(-100isize, -100isize)),
         Aabb2::new(Point2::new(-100isize, -100isize), Point2::new(10isize, 30isize)));
 
     let aabb = Aabb3::new(Point3::new(-20isize, 30isize, 5isize), Point3::new(10isize, -10isize, -5isize));
-    assert_eq!(aabb.min(), &Point3::new(-20isize, -10isize, -5isize));
-    assert_eq!(aabb.max(), &Point3::new(10isize, 30isize, 5isize));
+    assert_eq!(aabb.min(), Point3::new(-20isize, -10isize, -5isize));
+    assert_eq!(aabb.max(), Point3::new(10isize, 30isize, 5isize));
     assert_eq!(aabb.dim(), Vector3::new(30isize, 40isize, 10isize));
     assert_eq!(aabb.volume(), 30isize * 40isize * 10isize);
     assert_eq!(aabb.center(), Point3::new(-5isize, 10isize, 0isize));
 
-    assert!(aabb.contains(&Point3::new(0isize, 0isize, 0isize)));
-    assert!(!aabb.contains(&Point3::new(-100isize, 0isize, 0isize)));
-    assert!(!aabb.contains(&Point3::new(100isize, 0isize, 0isize)));
-    assert!(aabb.contains(&Point3::new(9isize, 29isize, -1isize)));
-    assert!(!aabb.contains(&Point3::new(10isize, 30isize, 5isize)));
-    assert!(aabb.contains(&Point3::new(-20isize, -10isize, -5isize)));
-    assert!(!aabb.contains(&Point3::new(-21isize, -11isize, -6isize)));
+    assert!(aabb.contains(Point3::new(0isize, 0isize, 0isize)));
+    assert!(!aabb.contains(Point3::new(-100isize, 0isize, 0isize)));
+    assert!(!aabb.contains(Point3::new(100isize, 0isize, 0isize)));
+    assert!(aabb.contains(Point3::new(9isize, 29isize, -1isize)));
+    assert!(!aabb.contains(Point3::new(10isize, 30isize, 5isize)));
+    assert!(aabb.contains(Point3::new(-20isize, -10isize, -5isize)));
+    assert!(!aabb.contains(Point3::new(-21isize, -11isize, -6isize)));
 
-    assert_eq!(aabb.add_v(&Vector3::new(1isize, 2isize, 3isize)),
+    assert_eq!(aabb.add_v(Vector3::new(1isize, 2isize, 3isize)),
         Aabb3::new(Point3::new(-19isize, 32isize, 8isize), Point3::new(11isize, -8isize, -2isize)));
 
     assert_eq!(aabb.mul_s(2isize),
         Aabb3::new(Point3::new(-40isize, -20isize, -10isize), Point3::new(20isize, 60isize, 10isize)));
 
-    assert_eq!(aabb.mul_v(&Vector3::new(1isize, 2isize, 3isize)),
+    assert_eq!(aabb.mul_v(Vector3::new(1isize, 2isize, 3isize)),
         Aabb3::new(Point3::new(-20isize, -20isize, -15isize), Point3::new(10isize, 60isize, 15isize)));
 }
 
@@ -101,7 +100,7 @@ fn test_bound() {
     let plane1 = Plane::from_point_normal(Point3::new(0f32, 0.0, 0.0), Vector3::new(0f32, 0.0, 1.0));
     let plane2 = Plane::from_point_normal(Point3::new(-5.0f32, 4.0, 0.0), Vector3::new(0f32, 1.0, 0.0));
     let plane3 = Plane::from_point_normal(Point3::new(6.0f32, 0.0, 0.0), Vector3::new(1f32, 0.0, 0.0));
-    assert_eq!(aabb.relate_plane(&plane1), Relation::Cross);
-    assert_eq!(aabb.relate_plane(&plane2), Relation::In);
-    assert_eq!(aabb.relate_plane(&plane3), Relation::Out);
+    assert_eq!(aabb.relate_plane(plane1), Relation::Cross);
+    assert_eq!(aabb.relate_plane(plane2), Relation::In);
+    assert_eq!(aabb.relate_plane(plane3), Relation::Out);
 }
