@@ -24,7 +24,7 @@ use cgmath::{Point, Point3};
 use cgmath::Vector;
 
 #[derive(Copy, Clone, PartialEq, Debug)]
-pub struct Sphere<S> {
+pub struct Sphere<S: BaseFloat> {
     pub center: Point3<S>,
     pub radius: S,
 }
