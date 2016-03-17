@@ -1,9 +1,9 @@
 # collision-rs
 
-[![Build Status](https://travis-ci.org/bjz/cgmath-rs.svg?branch=master)](https://travis-ci.org/csherratt/collision-rs)
-[![Version](https://img.shields.io/crates/v/cgmath.svg)](https://crates.io/crates/collision)
-[![License](https://img.shields.io/crates/l/cgmath.svg)](https://github.com/csherratt/collision-rs/blob/master/LICENSE)
-[![Downloads](https://img.shields.io/crates/d/cgmath.svg)](https://crates.io/crates/collision)
+[![Build Status](https://travis-ci.org/csherratt/collision.svg?branch=master)](https://travis-ci.org/csherratt/collision-rs)
+[![Version](https://img.shields.io/crates/v/collision.svg)](https://crates.io/crates/collision)
+[![License](https://img.shields.io/crates/l/collision.svg)](https://github.com/csherratt/collision-rs/blob/master/LICENSE)
+[![Downloads](https://img.shields.io/crates/d/collision.svg)](https://crates.io/crates/collision)
 
 This library is an extension of [cgmath](https://crates.io/crates/cgmath) that provides collision detection primitives.
 
