@@ -29,7 +29,7 @@ impl<S: BaseFloat> Intersect<Option<Point3<S>>> for (Plane<S>, Ray3<S>) {
 
         let t = -(p.d + r.origin.dot(p.n)) / r.direction.dot(p.n);
         if t < Zero::zero() { None }
-        else { Some(r.origin.add_v(r.direction.mul_s(t))) }
+        else { Some(r.origin + r.direction * t) }
     }
 }
 

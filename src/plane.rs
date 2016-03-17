@@ -15,7 +15,7 @@
 
 use std::fmt;
 
-use cgmath::{one, zero};
+use cgmath::one;
 use cgmath::{ApproxEq, BaseFloat};
 use cgmath::{Point, Point3};
 use cgmath::{Vector3, Vector4};
@@ -75,16 +75,16 @@ impl<S: BaseFloat> Plane<S> {
     /// Constructs a plane that passes through the the three points `a`, `b` and `c`
     pub fn from_points(a: Point3<S>, b: Point3<S>, c: Point3<S>) -> Option<Plane<S>> {
         // create two vectors that run parallel to the plane
-        let v0 = b.sub_p(a);
-        let v1 = c.sub_p(a);
+        let v0 = b - a;
+        let v1 = c - a;
 
         // find the normal vector that is perpendicular to v1 and v2
-        let mut n = v0.cross(v1);
+        let n = v0.cross(v1);
 
         if n.approx_eq(&Vector::zero()) { None }
         else {
             // compute the normal and the distance to the plane
-            n.normalize_self();
+            let n = n.normalize();
             let d = -a.dot(n);
 
             Some(Plane::new(n, d))
@@ -102,7 +102,7 @@ impl<S: BaseFloat> Plane<S> {
         if self.n.approx_eq(&Vector::zero()) { None }
         else {
             let denom = one::<S>() / self.n.length();
-            Some(Plane::new(self.n.mul_s(denom), self.d*denom))
+            Some(Plane::new(self.n * denom, self.d*denom))
         }
     }
 }

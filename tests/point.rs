@@ -17,7 +17,7 @@
 extern crate cgmath;
 extern crate collision;
 
-use cgmath::{Point, Point3, Vector, Vector3};
+use cgmath::{Point3, Vector3};
 use cgmath::{ApproxEq};
 use collision::{Bound, Relation, Plane};
 
@@ -34,6 +34,6 @@ fn test_bound() {
     let plane = Plane::from_point_normal(point, normal);
 
     assert_eq!(point.relate_plane(plane), Relation::Cross);
-    assert_eq!(point.add_v(normal).relate_plane(plane), Relation::In);
-    assert_eq!(point.add_v(normal.mul_s(-1.0)).relate_plane(plane), Relation::Out);
+    assert_eq!((point + normal).relate_plane(plane), Relation::In);
+    assert_eq!((point + normal * -1.0).relate_plane(plane), Relation::Out);
 }

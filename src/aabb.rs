@@ -22,6 +22,7 @@
 
 use std::fmt;
 
+use cgmath::Array;
 use cgmath::{Point, Point2, Point3};
 use cgmath::{Vector, Vector2, Vector3};
 use cgmath::{Zero, One};
@@ -31,6 +32,48 @@ use {Ray2, Plane};
 use bound::{Bound, Relation};
 use intersect::Intersect;
 
+pub trait MinMax {
+    fn min(a: Self, b: Self) -> Self;
+    fn max(a: Self, b: Self) -> Self;
+}
+
+impl<S> MinMax for Point2<S>
+    where S: BaseNum
+{
+    fn min(a: Point2<S>, b: Point2<S>) -> Point2<S> {
+        Point2::new(
+            a.x.partial_min(b.x),
+            a.y.partial_min(b.y)
+        )
+    }
+
+    fn max(a: Point2<S>, b: Point2<S>) -> Point2<S> {
+        Point2::new(
+            a.x.partial_max(b.x),
+            a.y.partial_max(b.y)
+        )
+    }
+}
+
+impl<S> MinMax for Point3<S>
+    where S: BaseNum
+{
+    fn min(a: Point3<S>, b: Point3<S>) -> Point3<S> {
+        Point3::new(
+            a.x.partial_min(b.x),
+            a.y.partial_min(b.y),
+            a.z.partial_min(b.z)
+        )
+    }
+
+    fn max(a: Point3<S>, b: Point3<S>) -> Point3<S> {
+        Point3::new(
+            a.x.partial_max(b.x),
+            a.y.partial_max(b.y),
+            a.z.partial_max(b.z)
+        )
+    }
+}
 
 pub trait Aabb<S: BaseNum, V: Vector<Scalar=S>, P: Point<Scalar=S, Vector=V>>: Sized {
     /// Create a new AABB using two points as opposing corners.
@@ -44,7 +87,7 @@ pub trait Aabb<S: BaseNum, V: Vector<Scalar=S>, P: Point<Scalar=S, Vector=V>>: S
 
     /// Return the dimensions of this AABB.
     #[inline]
-    fn dim(&self) -> V { self.max().sub_p(self.min()) }
+    fn dim(&self) -> V { self.max() - self.min() }
 
     /// Return the volume this AABB encloses.
     #[inline]
@@ -54,7 +97,7 @@ pub trait Aabb<S: BaseNum, V: Vector<Scalar=S>, P: Point<Scalar=S, Vector=V>>: S
     #[inline]
     fn center(&self) -> P {
         let two = S::one() + S::one();
-        self.min().add_v(self.dim().div_s(two))
+        self.min() + self.dim() / two
     }
 
     /// Tests whether a point is cointained in the box, inclusive for min corner
@@ -63,26 +106,29 @@ pub trait Aabb<S: BaseNum, V: Vector<Scalar=S>, P: Point<Scalar=S, Vector=V>>: S
     fn contains(&self, p: P) -> bool;
 
     /// Returns a new AABB that is grown to include the given point.
-    fn grow(&self, p: P) -> Self {
-        let min = Point::min(self.min(), p);
-        let max = Point::max(self.max(), p);
-        Aabb::new(min, max)
+    fn grow(&self, p: P) -> Self
+        where P: MinMax
+    {
+        Aabb::new(
+            MinMax::min(self.min(), p),
+            MinMax::max(self.max(), p)
+        )
     }
 
     /// Add a vector to every point in the AABB, returning a new AABB.
     fn add_v(&self, v: V) -> Self {
-        Aabb::new(self.min().add_v(v), self.max().add_v(v))
+        Aabb::new(self.min() + v, self.max() + v)
     }
 
     /// Multiply every point in the AABB by a scalar, returning a new AABB.
     fn mul_s(&self, s: S) -> Self {
-        Aabb::new(self.min().mul_s(s.clone()), self.max().mul_s(s.clone()))
+        Aabb::new(self.min() * s, self.max() * s)
     }
 
     /// Multiply every point in the AABB by a vector, returning a new AABB.
     fn mul_v(&self, v: V) -> Self {
-        let min = P::from_vec(self.min().to_vec().mul_v(v));
-        let max = P::from_vec(self.max().to_vec().mul_v(v));
+        let min = P::from_vec(self.min().to_vec() * v);
+        let max = P::from_vec(self.max().to_vec() * v);
         Aabb::new(min, max)
     }
 }
@@ -128,8 +174,8 @@ impl<S: BaseNum> Aabb<S, Vector2<S>, Point2<S>> for Aabb2<S> {
 
     #[inline]
     fn contains(&self, p: Point2<S>) -> bool {
-        let v_min = p.sub_p(self.min());
-        let v_max = self.max().sub_p(p);
+        let v_min = p - self.min();
+        let v_max = self.max() - p;
         v_min.x >= S::zero() && v_min.y >= S::zero() &&
         v_max.x >  S::zero() && v_max.y >  S::zero()
     }
@@ -188,8 +234,8 @@ impl<S: BaseNum> Aabb<S, Vector3<S>, Point3<S>> for Aabb3<S> {
 
     #[inline]
     fn contains(&self, p: Point3<S>) -> bool {
-        let v_min = p.sub_p(self.min());
-        let v_max = self.max().sub_p(p);
+        let v_min = p - self.min();
+        let v_max = self.max() - p;
         v_min.x >= S::zero() && v_min.y >= S::zero() && v_min.z >= S::zero() &&
         v_max.x >  S::zero() && v_max.y >  S::zero() && v_max.z >  S::zero()
     }

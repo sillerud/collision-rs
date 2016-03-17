@@ -43,9 +43,9 @@ fn test_bound() {
         Plane::from_point_normal(point, normal)
         ), Relation::Cross);
     assert_eq!(sphere.relate_plane(
-        Plane::from_point_normal(point.add_v(normal.mul_s(-3.0)), normal),
+        Plane::from_point_normal(point + normal * -3.0, normal),
         ), Relation::In);
     assert_eq!(sphere.relate_plane(
-        Plane::from_point_normal(point.add_v(normal.mul_s(3.0)), normal),
+        Plane::from_point_normal(point + normal * 3.0, normal),
         ), Relation::Out);
 }

@@ -21,7 +21,7 @@ use cgmath::{zero, one};
 use cgmath::{Matrix, Matrix4};
 use cgmath::BaseFloat;
 use cgmath::Point3;
-use cgmath::{Vector, EuclideanVector};
+use cgmath::{EuclideanVector};
 use cgmath::{Angle, PerspectiveFov, Ortho, Perspective};
 
 #[derive(Copy, Clone, Debug, PartialEq)]
@@ -52,17 +52,17 @@ impl<S: BaseFloat + 'static> Frustum<S> {
     /// Extract frustum planes from a projection matrix.
     pub fn from_matrix4(mat: Matrix4<S>) -> Option<Frustum<S>> {
         Some(Frustum::new(
-            match Plane::from_vector4_alt(mat.row(3).add_v(mat.row(0))).normalize()
+            match Plane::from_vector4_alt(mat.row(3) + mat.row(0)).normalize()
                 { Some(p) => p, None => return None },
-            match Plane::from_vector4_alt(mat.row(3).sub_v(mat.row(0))).normalize()
+            match Plane::from_vector4_alt(mat.row(3) - mat.row(0)).normalize()
                 { Some(p) => p, None => return None },
-            match Plane::from_vector4_alt(mat.row(3).add_v(mat.row(1))).normalize()
+            match Plane::from_vector4_alt(mat.row(3) + mat.row(1)).normalize()
                 { Some(p) => p, None => return None },
-            match Plane::from_vector4_alt(mat.row(3).sub_v(mat.row(1))).normalize()
+            match Plane::from_vector4_alt(mat.row(3) - mat.row(1)).normalize()
                 { Some(p) => p, None => return None },
-            match Plane::from_vector4_alt(mat.row(3).add_v(mat.row(2))).normalize()
+            match Plane::from_vector4_alt(mat.row(3) + mat.row(2)).normalize()
                 { Some(p) => p, None => return None },
-            match Plane::from_vector4_alt(mat.row(3).sub_v(mat.row(2))).normalize()
+            match Plane::from_vector4_alt(mat.row(3) - mat.row(2)).normalize()
                 { Some(p) => p, None => return None }
         ))
     }
@@ -98,7 +98,7 @@ pub trait Projection<S: BaseFloat>: Into<Matrix4<S>> {
     fn to_frustum(&self) -> Frustum<S>;
 }
 
-impl<S: BaseFloat + 'static, A: Angle<S>> Projection<S> for PerspectiveFov<S, A> {
+impl<S: BaseFloat + 'static> Projection<S> for PerspectiveFov<S> {
     fn to_frustum(&self) -> Frustum<S> {
         // TODO: Could this be faster?
         Frustum::from_matrix4(self.clone().into()).unwrap()

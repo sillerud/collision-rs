@@ -33,13 +33,13 @@ impl<S: BaseFloat> Intersect<Option<Point3<S>>> for (Sphere<S>, Ray3<S>) {
     fn intersection(&self) -> Option<Point3<S>> {
         let (ref s, ref r) = *self;
 
-        let l = s.center.sub_p(r.origin);
+        let l = s.center - r.origin;
         let tca = l.dot(r.direction);
         if tca < S::zero() { return None; }
         let d2 = l.dot(l) - tca*tca;
         if d2 > s.radius*s.radius { return None; }
         let thc = (s.radius*s.radius - d2).sqrt();
-        Some(r.origin.add_v(r.direction.mul_s(tca - thc)))
+        Some(r.origin + r.direction * (tca - thc))
     }
 }
 
